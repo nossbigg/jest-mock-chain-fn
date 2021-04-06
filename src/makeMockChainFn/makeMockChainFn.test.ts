@@ -1,56 +1,33 @@
 import { makeMockChainFn } from './makeMockChainFn'
 
-describe('makeMockChainFn', () => {
-  describe('single property', () => {
-    describe('function call', () => {
-      it('returns mock chain fn on arbitraty function call', () => {
-        const { mockChainFn } = makeMockChainFn()
+describe('makeMockChainFn: function call', () => {
+  const doSetup = () => {
+    return makeMockChainFn()
+  }
 
-        const result = mockChainFn.myCall()
-        expect(result).toBe(mockChainFn)
-      })
+  it('returns mock chain fn on arbitraty function call', () => {
+    const { mockChainFn } = doSetup()
 
-      it('captures function call', () => {
-        const { mockChainFn, calls } = makeMockChainFn()
-
-        mockChainFn.myCall(1, { a: 1 }, 'welp', () => {})
-        const expectedCall = {
-          key: 'myCall',
-          type: 'function',
-          args: [1, { a: 1 }, 'welp', expect.any(Function)],
-        }
-        expect(calls).toEqual([expectedCall])
-      })
-    })
-
-    describe('value call', () => {
-      it('returns mock chain fn on arbitraty property call', () => {
-        const { mockChainFn } = makeMockChainFn({
-          mockPropertyReturns: { myProperty: {} },
-        })
-
-        const result = mockChainFn.myProperty
-        expect(result).toBe(mockChainFn)
-      })
-
-      it('captures function call', () => {
-        const { mockChainFn, calls } = makeMockChainFn({
-          mockPropertyReturns: { myProperty: {} },
-        })
-
-        mockChainFn.myProperty
-        const expectedCall = {
-          key: 'myProperty',
-          type: 'value',
-        }
-        expect(calls).toEqual([expectedCall])
-      })
-    })
+    const result = mockChainFn.myCall()
+    expect(result).toBe(mockChainFn)
   })
 
-  describe('mockPropertyReturns', () => {
-    it('returns mock function specified in mockPropertyReturns', () => {
+  it('captures function call', () => {
+    const { mockChainFn, calls } = doSetup()
+
+    mockChainFn.myCall(1, { a: 1 }, 'welp', () => {})
+    const expectedCall = {
+      key: 'myCall',
+      type: 'function',
+      args: [1, { a: 1 }, 'welp', expect.any(Function)],
+    }
+    expect(calls).toEqual([expectedCall])
+  })
+
+  describe('with own return value', () => {
+    it('returns mock function', () => {
       const mockFn = jest.fn()
+
       const { mockChainFn } = makeMockChainFn({
         mockPropertyReturns: { myCall: { value: mockFn } },
       })
@@ -58,14 +35,58 @@ describe('makeMockChainFn', () => {
       mockChainFn.myCall()
       expect(mockFn).toHaveBeenCalled()
     })
+  })
+})
 
-    it('returns value specified in mockPropertyReturns', () => {
-      const { mockChainFn } = makeMockChainFn({
+describe('makeMockChainFn: value call', () => {
+  const doSetup = () => {
+    return makeMockChainFn({
+      mockPropertyReturns: { myProperty: {} },
+    })
+  }
+
+  it('returns mock chain fn on arbitraty property call', () => {
+    const { mockChainFn } = doSetup()
+
+    const result = mockChainFn.myProperty
+    expect(result).toBe(mockChainFn)
+  })
+
+  it('captures property call', () => {
+    const { mockChainFn, calls } = doSetup()
+
+    mockChainFn.myProperty
+    const expectedCall = {
+      key: 'myProperty',
+      type: 'value',
+    }
+    expect(calls).toEqual([expectedCall])
+  })
+
+  describe('with own return value', () => {
+    const doSetup2 = () => {
+      return makeMockChainFn({
         mockPropertyReturns: { myProperty: { value: 'abc' } },
       })
+    }
+
+    it('returns value specified', () => {
+      const { mockChainFn } = doSetup2()
 
       const result = mockChainFn.myProperty
       expect(result).toEqual('abc')
+    })
+
+    it('captures property call', () => {
+      const { mockChainFn, calls } = doSetup2()
+
+      mockChainFn.myProperty
+      const expectedCall = {
+        key: 'myProperty',
+        type: 'value',
+        value: 'abc',
+      }
+      expect(calls).toEqual([expectedCall])
     })
   })
 })
