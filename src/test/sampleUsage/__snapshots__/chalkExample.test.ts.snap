@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`chalkExample matches snapshot 1`] = `
+Array [
+  Object {
+    "key": "bold",
+    "type": "value",
+  },
+  Object {
+    "args": Array [
+      "some message",
+    ],
+    "key": "red",
+    "type": "function",
+  },
+]
+`;

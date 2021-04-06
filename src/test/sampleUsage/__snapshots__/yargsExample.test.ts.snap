@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`yargsExample matches snapshot 1`] = `
+Array [
+  Object {
+    "args": Array [
+      "pirate-parser",
+    ],
+    "key": "scriptName",
+    "type": "function",
+  },
+  Object {
+    "args": Array [
+      "$0 <cmd> [args]",
+    ],
+    "key": "usage",
+    "type": "function",
+  },
+  Object {
+    "args": Array [
+      "hello [name]",
+      "welcome ter yargs!",
+      [Function],
+      [Function],
+    ],
+    "key": "command",
+    "type": "function",
+  },
+  Object {
+    "args": Array [],
+    "key": "help",
+    "type": "function",
+  },
+  Object {
+    "key": "argv",
+    "type": "value",
+    "value": Object {
+      "some": "object",
+    },
+  },
+]
+`;
