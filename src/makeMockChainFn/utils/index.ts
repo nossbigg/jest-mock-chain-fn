@@ -1,3 +1,5 @@
 export * from './makeNewMockMapping'
 export * from './makeProxyHandler'
 export * from './handlePropertyOverride'
+export * from './clearExistingCallsHandler'
+export * from './clearExistingMocksHandler'

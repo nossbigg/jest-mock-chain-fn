@@ -65,5 +65,16 @@ describe('makeMockChainFn: function call', () => {
       }
       expect(calls).toEqual([expectedCall])
     })
+
+    it('propagates error thrown from provided mock function', () => {
+      const functionWithError = () => {
+        throw new Error()
+      }
+      const { mockChainFn } = makeMockChainFn({
+        mockPropertyReturns: { myCall: { value: functionWithError } },
+      })
+
+      expect(() => mockChainFn.myCall()).toThrowError()
+    })
   })
 })

@@ -1,7 +1,9 @@
 export type MockChainFnInternalStateType = {
-  mocks: Record<string, jest.Mock>
-  calls: CallsType[]
+  mocks: MocksMappingType
+  calls: CallsAccumulatorType
 }
+export type CallsAccumulatorType = CallsType[]
+export type MocksMappingType = Record<string, jest.Mock>
 
 export type MakeMockChainFnOptions = {
   mockPropertyReturns?: Record<string, MockPropertyReturnsEntry>
@@ -12,6 +14,8 @@ export type MakeMockChainFnReturnType = {
   mockChainFn: Record<string, any>
   mocks: Record<string, jest.Mock>
   calls: CallsType[]
+  clearExistingMocks: () => void
+  clearExistingCalls: () => void
 }
 
 export type CallsType = CallFnType | CallValueType

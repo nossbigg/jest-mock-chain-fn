@@ -1,20 +1,26 @@
 import { JestMockChainFnInternalState } from './constants'
-import { makeProxyHandler } from './utils'
+import {
+  clearExistingCallsHandler,
+  clearExistingMocksHandler,
+  makeProxyHandler,
+} from './utils'
 import {
   MockChainFnInternalStateType,
   MakeMockChainFnOptions,
   MakeMockChainFnReturnType,
+  MocksMappingType,
+  CallsAccumulatorType,
 } from './typedefs'
 
 export const makeMockChainFn = (
   options: MakeMockChainFnOptions = {}
 ): MakeMockChainFnReturnType => {
+  const mocks: MocksMappingType = {}
+  const calls: CallsAccumulatorType = []
   const mockChainFnInternalState: MockChainFnInternalStateType = {
-    mocks: {},
-    calls: [],
+    mocks,
+    calls,
   }
-  const { mocks, calls } = mockChainFnInternalState
-
   const mockChainFnObject = {
     [JestMockChainFnInternalState]: mockChainFnInternalState,
   }
@@ -23,10 +29,16 @@ export const makeMockChainFn = (
     options,
     mockChainFnObject,
   })
-
   const mockChainFnWithProxy = new Proxy(
     mockChainFnObject,
     mockChainFnProxyHandler
   )
-  return { mockChainFn: mockChainFnWithProxy, calls, mocks }
+
+  return {
+    mockChainFn: mockChainFnWithProxy,
+    calls,
+    mocks,
+    clearExistingCalls: clearExistingCallsHandler(calls),
+    clearExistingMocks: clearExistingMocksHandler(mocks),
+  }
 }
