@@ -1,9 +1,9 @@
-import { BulilderMockInternalStateType, CallFnType } from '../../typedefs'
+import { MockChainFnInternalStateType, CallFnType } from '../../typedefs'
 
 export const makeNewMockMapping = (
-  builderMockInternalState: BulilderMockInternalStateType
+  mockChainFnInternalState: MockChainFnInternalStateType
 ) => (property: string, receiver: Object): void => {
-  const { calls, mocks } = builderMockInternalState
+  const { calls, mocks } = mockChainFnInternalState
 
   const newMockFn = jest.fn()
   newMockFn.mockImplementation((...args) => {

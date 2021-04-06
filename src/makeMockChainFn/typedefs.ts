@@ -1,9 +1,9 @@
-export type BulilderMockInternalStateType = {
+export type MockChainFnInternalStateType = {
   mocks: Record<string, jest.Mock>
   calls: CallsType[]
 }
 
-export type MakeBuilderMockOptions = {
+export type MakeMockChainFnOptions = {
   mockPropertyReturns?: Record<string, MockPropertyReturnsEntry>
 }
 export type MockPropertyReturnsEntry = { value?: any }

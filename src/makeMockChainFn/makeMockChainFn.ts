@@ -1,32 +1,32 @@
 import { JestMockChainFnInternalState } from './constants'
 import { makeNewMockMapping } from './utils'
 import {
-  BulilderMockInternalStateType,
+  MockChainFnInternalStateType,
   CallValueType,
-  MakeBuilderMockOptions,
+  MakeMockChainFnOptions,
   MakeMockChainFnReturnType,
 } from './typedefs'
 
 export const makeMockChainFn = (
-  options: MakeBuilderMockOptions = {}
+  options: MakeMockChainFnOptions = {}
 ): MakeMockChainFnReturnType => {
   const { mockPropertyReturns = {} } = options
 
-  const builderMockInternalState: BulilderMockInternalStateType = {
+  const mockChainFnInternalState: MockChainFnInternalStateType = {
     mocks: {},
     calls: [],
   }
-  const { mocks, calls } = builderMockInternalState
+  const { mocks, calls } = mockChainFnInternalState
 
-  const builderMock = {
-    [JestMockChainFnInternalState]: builderMockInternalState,
+  const mockChainFnObject = {
+    [JestMockChainFnInternalState]: mockChainFnInternalState,
   }
 
-  const builderMockHandler: ProxyHandler<any> = {
+  const mockChainFnProxyHandler: ProxyHandler<any> = {
     get: function (_, _prop, receiver) {
       // allow access to internal state
       if (_prop === JestMockChainFnInternalState) {
-        return builderMock[JestMockChainFnInternalState]
+        return mockChainFnObject[JestMockChainFnInternalState]
       }
 
       const property = _prop as string
@@ -57,7 +57,7 @@ export const makeMockChainFn = (
 
       // setup default method chaining mock, if missing
       if (!mocks[property]) {
-        makeNewMockMapping(builderMockInternalState)(property, receiver)
+        makeNewMockMapping(mockChainFnInternalState)(property, receiver)
       }
 
       // return fn mock
@@ -65,6 +65,9 @@ export const makeMockChainFn = (
     },
   }
 
-  const mockChainFn = new Proxy(builderMock, builderMockHandler)
-  return { mockChainFn, calls, mocks }
+  const mockChainFnWithProxy = new Proxy(
+    mockChainFnObject,
+    mockChainFnProxyHandler
+  )
+  return { mockChainFn: mockChainFnWithProxy, calls, mocks }
 }

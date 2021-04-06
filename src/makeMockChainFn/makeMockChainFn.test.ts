@@ -3,7 +3,7 @@ import { makeMockChainFn } from './makeMockChainFn'
 describe('makeMockChainFn', () => {
   describe('single property', () => {
     describe('function call', () => {
-      it('returns builder fn on arbitraty function call', () => {
+      it('returns mock chain fn on arbitraty function call', () => {
         const { mockChainFn } = makeMockChainFn()
 
         const result = mockChainFn.myCall()
@@ -24,7 +24,7 @@ describe('makeMockChainFn', () => {
     })
 
     describe('value call', () => {
-      it('returns builder fn on arbitraty property call', () => {
+      it('returns mock chain fn on arbitraty property call', () => {
         const { mockChainFn } = makeMockChainFn({
           mockPropertyReturns: { myProperty: {} },
         })
