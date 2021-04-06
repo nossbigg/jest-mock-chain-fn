@@ -25,15 +25,45 @@ describe('makeMockChainFn: function call', () => {
   })
 
   describe('with own return value', () => {
-    it('returns mock function', () => {
-      const mockFn = jest.fn()
+    const doSetup2 = () => {
+      const ownMockFn = jest.fn()
+      ownMockFn.mockReturnValue('xyz')
 
-      const { mockChainFn } = makeMockChainFn({
-        mockPropertyReturns: { myCall: { value: mockFn } },
+      const makeMockChainFnReturn = makeMockChainFn({
+        mockPropertyReturns: { myCall: { value: ownMockFn } },
       })
 
-      mockChainFn.myCall()
-      expect(mockFn).toHaveBeenCalled()
+      return { ownMockFn, makeMockChainFnReturn }
+    }
+
+    it('returns result of mock function', () => {
+      const { makeMockChainFnReturn } = doSetup2()
+      const { mockChainFn } = makeMockChainFnReturn
+
+      const result = mockChainFn.myCall(1, 2)
+      expect(result).toEqual('xyz')
+    })
+
+    it('calls mock function', () => {
+      const { ownMockFn, makeMockChainFnReturn } = doSetup2()
+      const { mockChainFn } = makeMockChainFnReturn
+
+      mockChainFn.myCall(1, 2)
+      expect(ownMockFn).toHaveBeenCalledWith(1, 2)
+    })
+
+    it('captures function call', () => {
+      const { makeMockChainFnReturn } = doSetup2()
+      const { mockChainFn, calls } = makeMockChainFnReturn
+
+      mockChainFn.myCall(1, 2)
+
+      const expectedCall = {
+        key: 'myCall',
+        type: 'function',
+        args: [1, 2],
+      }
+      expect(calls).toEqual([expectedCall])
     })
   })
 })

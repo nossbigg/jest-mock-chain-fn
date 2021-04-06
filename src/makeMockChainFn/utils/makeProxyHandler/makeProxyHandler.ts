@@ -1,7 +1,6 @@
-import { makeNewMockMapping } from '..'
+import { handlePropertyOverride, makeNewMockMapping } from '../index'
 import { JestMockChainFnInternalState } from '../../constants'
 import {
-  CallValueType,
   MakeMockChainFnOptions,
   MockChainFnInternalStateType,
 } from '../../typedefs'
@@ -18,7 +17,7 @@ export const makeProxyHandler = (args: MakeProxyHandlerArgs) => {
 
   const mockChainFnInternalState: MockChainFnInternalStateType =
     mockChainFnObject[JestMockChainFnInternalState]
-  const { mocks, calls } = mockChainFnInternalState
+  const { mocks } = mockChainFnInternalState
 
   const proxyHandler: ProxyHandler<any> = {
     get: function (_, _prop, receiver) {
@@ -28,33 +27,18 @@ export const makeProxyHandler = (args: MakeProxyHandlerArgs) => {
       }
 
       const property = _prop as string
-      // allow property overrides
+      // handle property overrides
       if (property in mockPropertyReturns) {
-        const mockPropertyReturnEntry = mockPropertyReturns[property]
-        if ('value' in mockPropertyReturnEntry) {
-          const { value } = mockPropertyReturnEntry
-
-          const callEntry: CallValueType = {
-            key: property,
-            type: 'value',
-            value,
-          }
-          calls.push(callEntry)
-
-          return value
-        }
-
-        const callEntry: CallValueType = {
-          key: property,
-          type: 'value',
-        }
-        calls.push(callEntry)
-
-        return receiver
+        return handlePropertyOverride({
+          property,
+          receiver,
+          mockChainFnInternalState,
+          options,
+        })
       }
 
       // setup default method chaining mock, if missing
-      if (!mocks[property]) {
+      if (!(property in mocks)) {
         makeNewMockMapping(mockChainFnInternalState)(property, receiver)
       }
 
