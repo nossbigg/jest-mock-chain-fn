@@ -1,7 +1,7 @@
 import { JestMockChainFnInternalState } from './constants'
+import { makeNewMockMapping } from './utils'
 import {
   BulilderMockInternalStateType,
-  CallFnType,
   CallValueType,
   MakeBuilderMockOptions,
   MakeMockChainFnReturnType,
@@ -20,22 +20,6 @@ export const makeMockChainFn = (
 
   const builderMock = {
     [JestMockChainFnInternalState]: builderMockInternalState,
-  }
-
-  const makeNewMockMapping = (property: string, receiver: Object) => {
-    const newMockFn = jest.fn()
-    newMockFn.mockImplementation((...args) => {
-      const callEntry: CallFnType = {
-        key: property,
-        type: 'function',
-        args,
-      }
-      calls.push(callEntry)
-
-      return receiver
-    })
-
-    mocks[property] = newMockFn
   }
 
   const builderMockHandler: ProxyHandler<any> = {
@@ -73,7 +57,7 @@ export const makeMockChainFn = (
 
       // setup default method chaining mock, if missing
       if (!mocks[property]) {
-        makeNewMockMapping(property, receiver)
+        makeNewMockMapping(builderMockInternalState)(property, receiver)
       }
 
       // return fn mock
