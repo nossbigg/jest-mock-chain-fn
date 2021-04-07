@@ -13,7 +13,9 @@
     "testing",
     "mock",
     "function",
-    "chain"
+    "chain",
+    "builder",
+    "fluent"
   ],
   "license": "MIT",
   "scripts": {
