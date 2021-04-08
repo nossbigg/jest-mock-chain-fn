@@ -8,13 +8,14 @@ Easier testing with chained functions + jest 🧪
 
 # Who's it for?
 
-1. You use libraries that use **method chaining** (eg. `new Item().setPrice(2).setQuantity(5)`) 
+1. You use libraries that use **method chaining** (eg. [yargs](https://github.com/yargs/yargs), [chalk](https://github.com/chalk/chalk))
+    - eg. `someItem.setPrice(2).setQuantity(5)`
     - see more: [Method Chaining](https://en.wikipedia.org/wiki/Method_chaining)
 1. You need unit tests to assert that these **chained methods are called correctly**
 1. You would like to **mock away the actual implementation** for ease of testing
 1. You **don't want to write so much setup code** for testing libraries that use method chaining
 
-_Related concepts: [Builder Design Pattern](https://sourcemaking.com/design_patterns/builder), [Fluent Interface](https://martinfowler.com/bliki/FluentInterface.html)_
+_Related concepts:_ [Builder Design Pattern](https://sourcemaking.com/design_patterns/builder), [Fluent Interface](https://martinfowler.com/bliki/FluentInterface.html)
 
 # Scenario
 
@@ -167,7 +168,7 @@ _For: Property with fixed value (non-function)_
 - Eg. We want a property call to return a mock value
 - Need to set `mockPropertyReturns = { someProperty: { value: 'own value' } }`
 
-### Tips
+# Tips
 
 - Calling `jest.resetAllMocks()` will clear `jest.fn()` mock functions that are used internally within `mockChainFn` (ie. in `mocks` mapping)
 - If you want your own mock function to continue chaining, just set the return value to `mockChainFn`
